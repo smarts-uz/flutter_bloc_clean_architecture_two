@@ -526,7 +526,7 @@ packages:
     source: hosted
     version: "1.0.4"
   mobx:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: mobx
       sha256: "0afcf88b3ee9d6819890bf16c11a727fc8c62cf736fda8e5d3b9b4eace4e62ea"

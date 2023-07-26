@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rickmorty/layers/domain/usecase/get_all_characters.dart';

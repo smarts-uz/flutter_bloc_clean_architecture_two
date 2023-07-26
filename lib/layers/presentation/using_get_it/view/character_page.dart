@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/material.dart';
 import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:rickmorty/layers/presentation/shared/character_list_item.dart';

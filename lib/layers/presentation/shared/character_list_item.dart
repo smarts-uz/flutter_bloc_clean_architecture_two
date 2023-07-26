@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:rickmorty/layers/domain/entity/character.dart';
@@ -73,10 +75,13 @@ class _ItemDescription extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  'Last location: ${item.location?.name ?? ''}',
-                  style: textTheme.labelSmall!.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+                Expanded(
+                  child: Text(
+                    'Last location: ${item.location?.name ?? ''}',
+                    style: textTheme.labelSmall!.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ],

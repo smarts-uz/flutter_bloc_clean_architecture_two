@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rickmorty/layers/domain/usecase/get_all_characters.dart';
-import 'package:rickmorty/layers/presentation/shared/character_card.dart';
+import 'package:rickmorty/layers/presentation/shared/character_list_item.dart';
+import 'package:rickmorty/layers/presentation/shared/character_list_item_header.dart';
+import 'package:rickmorty/layers/presentation/shared/character_list_item_loading.dart';
 import 'package:rickmorty/layers/presentation/using_bloc/bloc/character_page_bloc.dart';
 
 // -----------------------------------------------------------------------------
@@ -30,7 +32,7 @@ class CharacterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status = context.select((CharacterPageBloc b) => b.state.status);
-    return status != CharacterPageStatus.success
+    return status == CharacterPageStatus.initial
         ? const Center(child: CircularProgressIndicator())
         : const _Content();
   }
@@ -49,6 +51,8 @@ class _Content extends StatefulWidget {
 class __ContentState extends State<_Content> {
   final _scrollController = ScrollController();
 
+  CharacterPageBloc get pageBloc => context.read<CharacterPageBloc>();
+
   @override
   void initState() {
     super.initState();
@@ -56,37 +60,31 @@ class __ContentState extends State<_Content> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final list = context.select((CharacterPageBloc b) => b.state.characters);
-    final end = context.select((CharacterPageBloc b) => b.state.hasReachedEnd);
-
-    final length = end
-        ? list.length
-        : list.length % 2 == 0
-            ? list.length + 1
-            : list.length + 2;
+  Widget build(BuildContext ctx) {
+    final list = ctx.select((CharacterPageBloc b) => b.state.characters);
+    final hasEnded = ctx.select((CharacterPageBloc b) => b.state.hasReachedEnd);
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GridView.builder(
-        physics: const BouncingScrollPhysics(),
-        key: const Key('character_page_list_key'),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Adjust the number of columns here
-          childAspectRatio: 1 / 1.26,
-          crossAxisSpacing: 16,
-        ),
-        padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.only(left: 16, right: 16),
+      child: ListView.builder(
+        key: const ValueKey('character_page_list_key'),
         controller: _scrollController,
-        itemCount: length,
+        itemCount: hasEnded ? list.length : list.length + 1,
         itemBuilder: (context, index) {
-          if (index < list.length) {
-            final char = list[index];
-            return CharacterCard(character: char);
+          if (index >= list.length) {
+            return !hasEnded
+                ? const CharacterListItemLoading()
+                : const SizedBox();
           }
-          return end
-              ? const SizedBox()
-              : const Center(child: CircularProgressIndicator());
+          final item = list[index];
+          return index == 0
+              ? Column(
+                  children: [
+                    const CharacterListItemHeader(titleText: 'All Characters'),
+                    CharacterListItem(item: item),
+                  ],
+                )
+              : CharacterListItem(item: item);
         },
       ),
     );
@@ -102,7 +100,7 @@ class __ContentState extends State<_Content> {
 
   void _onScroll() {
     if (_isBottom) {
-      context.read<CharacterPageBloc>().add(const FetchNextPageEvent());
+      pageBloc.add(const FetchNextPageEvent());
     }
   }
 

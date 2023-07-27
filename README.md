@@ -1,3 +1,5 @@
+[![Flutter Workflow](https://github.com/smarts-uz/flutter_bloc_clean_architecture_two/actions/workflows/main.yaml/badge.svg)](https://github.com/smarts-uz/flutter_bloc_clean_architecture_two/actions/workflows/main.yaml)
+
 # Flutter - Clean Architecture proposal
 
 ![app](./art/app.png?raw=true)
